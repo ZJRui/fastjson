@@ -89,7 +89,7 @@ public class ASMSerializerFactory implements Opcodes {
             i = variants.get(name);
             return i.intValue();
         }
-        
+
         public int getFieldOrinal(String name) {
             int fieldIndex = -1;
             for (int i = 0, size = getters.length; i < size; ++i) {
@@ -135,18 +135,8 @@ public class ASMSerializerFactory implements Opcodes {
             }
         }
 
-        String className = "ASMSerializer_" + seed.incrementAndGet() + "_" + clazz.getSimpleName();
-        String classNameType;
-        String classNameFull;
-        Package pkg = ASMSerializerFactory.class.getPackage();
-        if (pkg != null) {
-            String packageName = pkg.getName();
-            classNameType = packageName.replace('.', '/') + "/" + className;
-            classNameFull = packageName + "." + className;
-        } else {
-            classNameType = className;
-            classNameFull = className;
-        }
+        String className = getGenClassName(clazz);
+        int beanSerializeFeatures = TypeUtils.getSerializeFeatures(clazz);
 
         ClassWriter cw = new ClassWriter();
         cw.visit(V1_5 //
@@ -409,7 +399,7 @@ public class ASMSerializerFactory implements Opcodes {
         Class<?> serializerClass = classLoader.defineClassPublic(classNameFull, code, 0, code.length);
         Constructor<?> constructor = serializerClass.getConstructor(SerializeBeanInfo.class);
         Object instance = constructor.newInstance(beanInfo);
-
+       // 参考ASMSerializer_27_MessageLogInfo
         return (JavaBeanSerializer) instance;
     }
 
@@ -532,7 +522,7 @@ public class ASMSerializerFactory implements Opcodes {
                         elementClass = null;
                     }
                 }
-                
+
                 _get(mw, context, fieldInfo);
                 mw.visitTypeInsn(CHECKCAST, "java/util/List"); // cast
                 mw.visitVarInsn(ASTORE, context.var("list"));
@@ -768,7 +758,7 @@ public class ASMSerializerFactory implements Opcodes {
                 }
                 mw.visitLabel(classIfEnd_);
                 mw.visitLabel(notNullEnd_);
-                
+
 
                 mw.visitVarInsn(ALOAD, context.var("out"));
                 mw.visitVarInsn(BIPUSH, seperator);
@@ -934,7 +924,7 @@ public class ASMSerializerFactory implements Opcodes {
             mw.visitVarInsn(ALOAD, context.var("out"));
             mw.visitVarInsn(BIPUSH, '{');
             mw.visitMethodInsn(INVOKEVIRTUAL, SerializeWriter, "write", "(I)V");
-            
+
             mw.visitVarInsn(ALOAD, 0);
             mw.visitVarInsn(ALOAD, Context.serializer);
             if (context.beanInfo.typeKey != null) {
@@ -1089,12 +1079,12 @@ public class ASMSerializerFactory implements Opcodes {
             mw.visitVarInsn(ALOAD, context.var("out"));
             mw.visitVarInsn(ILOAD, context.var("seperator"));
             mw.visitMethodInsn(INVOKEVIRTUAL, SerializeWriter, "write", "(I)V");
-            
+
             mw.visitVarInsn(ALOAD, context.var("out"));
             mw.visitVarInsn(ALOAD, Context.fieldName);
             mw.visitInsn(ICONST_0);
             mw.visitMethodInsn(INVOKEVIRTUAL, SerializeWriter, "writeFieldName", "(Ljava/lang/String;Z)V");
-            
+
             mw.visitVarInsn(ALOAD, Context.serializer);
             mw.visitVarInsn(ALOAD, context.var("enum"));
             mw.visitVarInsn(ALOAD, Context.fieldName);
@@ -1109,7 +1099,7 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitLabel(_end_if);
         mw.visitLabel(_end);
     }
-    
+
     private void _int(Class<?> clazz, MethodVisitor mw, FieldInfo property, Context context, int var, char type) {
         Label end_ = new Label();
 
@@ -1150,7 +1140,7 @@ public class ASMSerializerFactory implements Opcodes {
 
         mw.visitLabel(end_);
     }
-    
+
     private void _float(Class<?> clazz, MethodVisitor mw, FieldInfo property, Context context) {
         Label end_ = new Label();
 
@@ -1190,7 +1180,7 @@ public class ASMSerializerFactory implements Opcodes {
 
         mw.visitLabel(end_);
     }
-    
+
     private void _get(MethodVisitor mw, Context context, FieldInfo fieldInfo) {
         Method method = fieldInfo.method;
         if (method != null) {
@@ -1318,7 +1308,7 @@ public class ASMSerializerFactory implements Opcodes {
         if (elementType instanceof Class<?>) {
             elementClass = (Class<?>) elementType;
         }
-        
+
         if (elementClass == Object.class //
             || elementClass == Serializable.class) {
             elementClass = null;
@@ -1629,7 +1619,7 @@ public class ASMSerializerFactory implements Opcodes {
             } else {
                 writeMethodName = fieldBeanToArray ? "writeAsArray" : "write";
             }
-            
+
             mw.visitVarInsn(ALOAD, context.var("fied_ser"));
             mw.visitTypeInsn(CHECKCAST, JavaBeanSerializer); // cast
             mw.visitVarInsn(ALOAD, Context.serializer);

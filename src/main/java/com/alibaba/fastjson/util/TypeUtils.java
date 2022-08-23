@@ -1920,7 +1920,7 @@ public class TypeUtils {
         } catch (Throwable ignored) {
 
         }
-
+//setBrandintroduction,getBrandintroduction,wait,wait,wait,equals,toString,hashCode,getClass,notify,notifyAll, class:com.alibaba.json.bvt.bug.Bug_for_apollo0317$VO
         for (Method method : methods) {
             String methodName = method.getName();
             int ordinal = 0, serialzeFeatures = 0, parserFeatures = 0;
@@ -2050,6 +2050,7 @@ public class TypeUtils {
                 if (methodName.equals("getDeclaringClass") && clazz.isEnum()) {
                     continue;
                 }
+                //methodName:getBrandintroduction c3=B,获取get后的第一个字符
                 char c3 = methodName.charAt(3);
                 String propertyName;
                 Field field = null;
@@ -2059,6 +2060,8 @@ public class TypeUtils {
                     if (compatibleWithJavaBean) {
                         propertyName = decapitalize(methodName.substring(3));
                     } else {
+                        //提取get方法的属性名
+                    }
                         propertyName = TypeUtils.getPropertyNameByMethodName(methodName);
                     }
                     propertyName = getPropertyNameByCompatibleFieldName(fieldCacheMap, methodName, propertyName, 3);
@@ -3447,7 +3450,7 @@ public class TypeUtils {
             if (class1.isAssignableFrom(class2)) {
                 return -1;
             }
-            
+
             if (class2.isAssignableFrom(class1)) {
                 return 1;
             }

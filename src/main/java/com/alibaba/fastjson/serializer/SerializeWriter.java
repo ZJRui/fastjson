@@ -157,6 +157,19 @@ public final class SerializeWriter extends Writer {
     }
 
     public void config(SerializerFeature feature, boolean state) {
+        /**
+         *
+         * state的含义：
+         *
+         * SerializerFeature 是一个枚举类型， 每一个值 用一个位表示，因此第一个枚举值就是二进制00001=1
+         *
+         * 第二个就是二进制00010=2 ，第三个就是4，第四个就是5.
+         *
+         *int 类型的features  就相当于一个list，当我们 给 这个feautres中添加一个 枚举值的时候 只需要将 该枚举值
+         * 对应的位置 设置为1就可以了， 因此实际上就是 获取枚举值的二进制 表示形式，然后和feature进行或运算。
+         *
+         *
+         */
         if (state) {
             features |= feature.getMask();
             // 由于枚举序列化特性WriteEnumUsingToString和WriteEnumUsingName不能共存，需要检查

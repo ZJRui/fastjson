@@ -41,6 +41,12 @@ package com.alibaba.fastjson.asm;
 public interface Opcodes {
     int T_INT = 10;
 
+    /**
+     * 定义JVM操作码、访问标志和数组类型代码。这个接口没有定义所有JVM操作码，因为有些操作码是自动处理的。
+     * 例如，xLOAD和xSTORE操作码在可能的情况下会自动替换为xLOAD_n和xSTORE_n操作码。因此，这个接口中没有定义xLOAD_n
+     * 和xSTORE_n操作码。同样对于LDC，根据需要自动替换为LDC_W或LDC2_W, WIDE, GOTO_W和JSR_W。
+     */
+
     // versions
 
     // int V1_1 = 3 << 16 | 45;

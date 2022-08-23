@@ -68,8 +68,18 @@ public class JSONSerializer extends SerializeFilterable {
         this(new SerializeWriter(), config);
     }
 
+    /**
+     *
+     * <init>:86, JSONSerializer (com.alibaba.fastjson.serializer)
+     * <init>:72, JSONSerializer (com.alibaba.fastjson.serializer)
+     * toJSONString:388, JSON (com.alibaba.fastjson)
+     * test_for_apollo0317:19, Bug_for_apollo0317 (com.alibaba.json.bvt.bug)
+     *
+     * @param out
+     * @param config
+     */
     public JSONSerializer(SerializeWriter out, SerializeConfig config){
-        this.out = out;
+        this.out = out;//-->JSON.toJSONString() 中会创建一个 SerializeWriter out = new SerializeWriter(); 作为 out
         this.config = config;
     }
 
